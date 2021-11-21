@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+  overflow-x: hidden;
+}
+
+.Sidebar {
+  left: 0rem;
+  transition: all 500ms linear;
+  position: fixed;
+}
+.Sidebar.activo {
+  left: -16rem;
+  position: fixed;
+}
+
+
+.principal {
+  position: absolute;
+  transition: all 500ms linear;
+  left: 16rem;
+  width: 83.5%;
+}
+.principal.activo {
+  position: absolute;
+  left: 0rem;
+  width: 100%;
+}
+
+.btnSidebar {
+  display: grid;
+  row-gap: 3px;
+}
+
+.uno,
+.dos,
+.tres {
+  height: 3px;
+  background-color: rgb(255, 131, 6);
+  transition: all 500ms linear;
+}
+.uno {
+  width: 20px;
+}
+.dos {
+  width: 10px;
+}
+.tres {
+  width: 5px;
+}
+.mostrar .dos {
+  width: 20px;
+}
+.mostrar .tres {
+  width: 20px;
+}
+
+.descripcionPedido{
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.alerta.alerta-error {
+    background-color: red;
+    padding: 5px;
+    text-align: center;
+    color:white;
+}
