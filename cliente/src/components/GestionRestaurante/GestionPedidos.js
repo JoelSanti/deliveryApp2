@@ -30,7 +30,7 @@ const GestionPedidos = () => {
 
       <div className="block w-full">
         <CabeceraGestionR />
-        <div className="principal bg-secondary h-full "
+        <div 
       className={
 	  sidebar ?
          'principal bg-secondary h-full ' 

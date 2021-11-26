@@ -21,6 +21,10 @@ app.use('/api/restaurantes/registro',require('./routes/restaurantes/usuarios'))
 
 app.use('/api/restaurantes/login',require('./routes/restaurantes/auth'))
 
+app.use('/api/restaurantes/productos',require('./routes/restaurantes/productos'))
+
+
+
 app.get('/',(req,res)=>{
     res.send('Hola mundou')
 })

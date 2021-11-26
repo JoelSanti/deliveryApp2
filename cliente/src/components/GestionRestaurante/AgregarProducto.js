@@ -4,7 +4,8 @@ import {useState} from "react/cjs/react.development";
 import {useContext} from "react";
 import generalContext from "../../context/general/generalContext";
 
-const AgregarProducto = () => {
+const AgregarProducto = (props) => {
+
     const generalsContext = useContext(generalContext) 
     const {agregarProducto} = generalsContext;
 
@@ -28,6 +29,7 @@ const AgregarProducto = () => {
 		[e.target.name]:e.target.value
 	    })
 	}
+
     const onSubmitProductos = e =>{
 	e.preventDefault();
 	//validar el proyecto
@@ -36,8 +38,14 @@ const AgregarProducto = () => {
 	} 
 	//agregar el state
 	agregarProducto(producto)
+
+	//Redireccionar 
+	props.history.push('/gm')
 	//reiniciar el form 
     }
+    
+
+
   return (
     <div className="flex h-full bg-secondary">
       <Sidebar />

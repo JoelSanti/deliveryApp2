@@ -2,6 +2,7 @@ import React, { Fragment, useContext, useEffect } from "react";
 import Sidebar from "../layout/Sidebar";
 import CabeceraGestionR from "../layout/CabeceraGestionR";
 import AuthContext from '../../context/autenticacion/authContext';
+import generalContext from "../../context/general/generalContext";
 
 
 const GestionRestaurante = () => {
@@ -30,6 +31,10 @@ const {usuario,usuarioAutenticado} = authContext;
       usuarioAutenticado()
     },[])
 
+    const generalsContext = useContext(generalContext);
+    const {sidebar} = generalsContext;
+
+
   return (
     <Fragment>
       <div className="flex h-full">
@@ -38,7 +43,17 @@ const {usuario,usuarioAutenticado} = authContext;
         <div className="block w-full ">
           <CabeceraGestionR />
 
-          <div className="principal bg-secondary ">
+          <div 
+      
+      className={
+	  sidebar ?
+         'principal bg-secondary h-full ' 
+	  :
+	  'principal bg-secondary h-full activo '
+      }
+
+      >
+
             <div className="p-4 ">
              {usuario ?  <h1 className="text-gray-500 text-2xl font-serif">
 		 Bienvenido a { usuario.nombre }</h1> : null	}

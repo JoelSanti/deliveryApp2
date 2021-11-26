@@ -3,18 +3,55 @@ import Sidebar from "../layout/Sidebar";
 import CabeceraGestionR from "../layout/CabeceraGestionR";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import generalContext from "../../context/general/generalContext";
+import {useContext, useEffect, useState} from "react";
 
-const DetallesProducto = () => {
+const DetallesProducto = (props) => {
 
+    const generalsContext = useContext(generalContext) 
+    const {producto,eliminarProducto,actualizarProducto,productoActual} = generalsContext;
+ 
+    const [productoSeleccionado] = producto;
+    const {nombre,categoria,cantidadxdia,precio,imagen,descripcion} = productoSeleccionado
+
+    const [modal,switchMondal] = useState(false) 
+
+    const [modal2,switchMondal2] = useState(false) 
+
+    const eliminarProductoSeleccionado = () => {
+          eliminarProducto(productoSeleccionado._id)
+	  props.history.push('/gm')
+    }
+
+
+
+    const [productom,actualizarProductom]=useState(
+     productoSeleccionado
+    )
+ 
+
+    console.log(productom)
+      const productoOnchange = e => {
+	actualizarProductom({
+	    ...productom,
+	    [e.target.name]:e.target.value
+	})
+      }
+  
+
+
+    const modificarProducto = e => {
+	  e.preventDefault();
+          actualizarProducto(productom);
+	  switchMondal(false)
+	  switchMondal2(false)
+    }
     
-    const switchMondal = ()=>{
-        document.querySelector('.ModalDescripcionProducto').classList.toggle('hidden')
-        document.querySelector('.ModalDescripcionProducto').classList.toggle('flex')
-    }
-    const switchMondal2 = ()=>{
-      document.querySelector('.ModalInfoProducto').classList.toggle('hidden')
-      document.querySelector('.ModalInfoProducto').classList.toggle('flex')
-    }
+    useEffect(()=>{
+	if(producto){
+	  productoActual(productom._id)
+	    }
+    },[producto])
 
     return (
       <div className="flex h-full bg-secondary">
@@ -54,43 +91,38 @@ const DetallesProducto = () => {
                       <span className="font-semibold">
                         Nombre del Producto:
                       </span>
-                      <span className="text-gray-500">
-                        xxxxxxxxxxxxxxxxxxxxxxx
-                      </span>
+                      <span className="text-gray-500">{nombre}</span>
                     </div>
 
                     <div className="flex justify-between shadow-abajo2">
                       <span className="font-semibold">Cantidad por día:</span>
-                      <span className="text-gray-500">
-                        xxxxxxxxxxxxxxxxxxxxxxx
-                      </span>
+                      <span className="text-gray-500">{cantidadxdia}</span>
                     </div>
 
                     <div className="flex justify-between shadow-abajo2">
                       <span className="font-semibold">Categoria:</span>
-                      <span className="text-gray-500">
-                        xxxxxxxxxxxxxxxxxxxxxxx
-                      </span>
+                      <span className="text-gray-500">{categoria}</span>
                     </div>
 
                     <div className="flex justify-between shadow-abajo2">
                       <span className="font-semibold">
                         Precio del producto:
                       </span>
-                      <span className="text-gray-500">
-                        xxxxxxxxxxxxxxxxxxxxxxx
-                      </span>
+                      <span className="text-gray-500">{precio}</span>
                     </div>
 
                     <div className="flex justify-between mt-4">
                       <button
                         className="bg-naranja text-white px-5 py-2 text-center rounded-md"
-                        onClick={() => switchMondal2()}
+                        onClick={() => switchMondal2(true)}
                       >
                         Editar{" "}
                       </button>
-                      <button className="bg-black text-white px-5 py-2 text-center rounded-md">
-                        Borrar
+                      <button
+                        className="bg-black text-white px-5 py-2 text-center rounded-md"
+                        onClick={() => eliminarProductoSeleccionado()}
+                      >
+                        Eliminar
                       </button>
                     </div>
                   </div>
@@ -103,26 +135,13 @@ const DetallesProducto = () => {
                       </h1>
                       <button
                         className="text-naranja my-auto "
-                        onClick={() => switchMondal()}
+                        onClick={() => switchMondal(true)}
                       >
                         Editar <FontAwesomeIcon icon={faEdit} />
                       </button>
                     </div>
 
-                    <p className="text-gray-500  py-4">
-                      It is a long established fact that a reader will be
-                      distracted by the readable content of a page when looking
-                      at its layout. The point of using Lorem Ipsum is that it
-                      has a more-or-less normal distribution of letters, as
-                      opposed to using 'Content here, content here', making it
-                      look like readable English. Many desktop publishing
-                      packages and web page editors now use Lorem Ipsum as their
-                      default model text, and a search for 'lorem ipsum' will
-                      uncover many web sites still in their infancy. Various
-                      versions have evolved over the years, sometimes by
-                      accident, sometimes on purpose (injected humour and the
-                      like).
-                    </p>
+                    <p className="text-gray-500  py-4">{descripcion}</p>
                   </div>
                   <div className="flex text-center py-2">
                     <div className="w-1/2 block shadow-izquierdo">
@@ -148,43 +167,68 @@ const DetallesProducto = () => {
         {/* *************************************Aqui las ventanas modales************************ */}
 
         {/* Modal 1----------------------------------------------------------------------------------- */}
-        <div className="z-40 fixed w-screen justify-center  h-screen ModalDescripcionProducto hidden">
+        <div
+          className={
+            modal
+              ? "z-40 fixed w-screen justify-center h-screen flex"
+              : "z-40 fixed w-screen justify-center h-screen hidden"
+          }
+        >
           <div className="bg-gray-500 opacity-25 w-screen h-screen"></div>
-          <div className="z-50 fixed bg-danger w-1/2 h-80 mt-52 p-6">
+
+          <form className="z-50 fixed bg-white w-1/2 h-80 mt-52 p-6">
             <div className="flex justify-between">
               <h1>Descripcion del producto</h1>{" "}
               <button
+                type="button"
                 className=" text-naranja text-xl font-semibold"
-                onClick={() => switchMondal()}
+                onClick={() => switchMondal(false)}
               >
                 <FontAwesomeIcon icon={faTimesCircle} />
               </button>
             </div>
-            <textarea className="border-2 border-gray-200 bg-danger shadow-md w-full h-40 mt-6"></textarea>
+
+            <textarea
+              className="border-2 border-gray-200 bg-danger shadow-md w-full h-40 mt-6"
+              placeholder={productom.descripcion}
+              name="descripcion"
+              onChange={productoOnchange}
+            />
+
             <div className="flex justify-end gap-x-4 mt-4">
               <button
+                type="button"
                 className="px-4 py-2 rounded-md bg-black text-white font-semibold"
-                onClick={() => switchMondal()}
+                onClick={() => switchMondal(false)}
               >
                 Salir
               </button>
               <button
+                type="submit"
                 className="px-4 py-2  rounded-md bg-naranja text-white  font-semibold"
-                onClick={() => switchMondal()}
+                onClick={modificarProducto}
               >
                 Guardar
               </button>
             </div>
-          </div>
+          </form>
         </div>
         {/* Modal 2----------------------------------------------------------------------------------- */}
 
-        <div className="z-40 fixed w-screen justify-center  h-screen ModalInfoProducto hidden">
+        <div
+          className={
+            modal2
+              ? "z-40 fixed w-screen justify-center  h-screen ModalInfoProducto flex"
+              : "z-40 fixed w-screen justify-center  h-screen ModalInfoProducto hidden"
+          }
+        >
           <div className="bg-gray-500 opacity-25 w-screen h-screen"></div>
-          <div className="z-50 fixed bg-danger w-1/2 h-90 mt-16 p-6">
+
+          <form className="z-50 fixed bg-danger w-1/2 h-90 mt-16 p-6">
             <div className="flex justify-between">
               <h1>Informacion del producto</h1>{" "}
               <button
+	        type='button'
                 className=" text-naranja text-xl font-semibold"
                 onClick={() => switchMondal2()}
               >
@@ -209,12 +253,22 @@ const DetallesProducto = () => {
               <div className="flex gap-x-6">
                 <div className="grid gap-y-4 w-1/2">
                   <span className=" block">Cantidad por día:</span>
-                  <input className="text-gray-500 w-full border-2" />
+                  <input
+                    className="text-gray-500 w-full border-2"
+                    name="cantidadxdia"
+                    placeholder={cantidadxdia}
+	            onChange={productoOnchange}
+                  />
                 </div>
 
                 <div className="grid gap-y-4 w-1/2">
                   <span className=" block">Precio:</span>
-                  <input className="text-gray-500 w-full border-2" />
+                  <input
+                    className="text-gray-500 w-full border-2"
+	            name='precio'
+                    placeholder={precio}
+	            onChange={productoOnchange}
+                  />
                 </div>
               </div>
 
@@ -229,24 +283,29 @@ const DetallesProducto = () => {
                   id="imagen"
                 />
               </div>
+
             </div>
 
             <div className="flex justify-end gap-x-4 mt-4">
               <button
+	        type='button'
                 className="px-4 py-2 rounded-md bg-black text-white font-semibold"
-                onClick={() => switchMondal2()}
+                onClick={() => switchMondal2(false)}
               >
                 Salir
               </button>
               <button
                 className="px-4 py-2  rounded-md bg-naranja text-white  font-semibold"
-                onClick={() => switchMondal2()}
+                onClick={modificarProducto}
               >
                 Guardar
               </button>
             </div>
-          </div>
+
+          </form>
         </div>
+
+
       </div>
     );
 }

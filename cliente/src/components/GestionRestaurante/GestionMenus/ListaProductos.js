@@ -8,8 +8,10 @@ const ListaProductos = () => {
 
 
     useEffect(()=>{
+
     obtenerProductos()
-    }, []);
+
+    }, [productos]);
 
 
     if(productos.length === 0) return null;
@@ -21,7 +23,7 @@ const ListaProductos = () => {
         {productos.map((producto) => (
           <Producto
 
-	    key={producto.id}
+	    key={producto._id}
 	    producto = {producto}/>
         ))}
         {/*------------------ ---------------------------------------*/}

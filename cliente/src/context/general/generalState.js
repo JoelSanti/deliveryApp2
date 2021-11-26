@@ -1,65 +1,18 @@
 import {useReducer} from "react";
 import generalContext from "./generalContext";
 import generalReducer from "./generalReducer";
-import { SWITCH_SIDEBAR , OBTENER_PRODUCTOS, AGREGAR_PRODUCTO, VALIDAR_FORMPRODUCTO } from "../../types";
-import { v4 as uuidv4 } from 'uuid';
+import { SWITCH_SIDEBAR , OBTENER_PRODUCTOS, AGREGAR_PRODUCTO, VALIDAR_FORMPRODUCTO,PRODUCTO_ACTUAL,ELIMINAR_PRODUCTO, ACTUALIZAR_PRODUCTO } from "../../types";
+
+import clienteAxios from '../../config/axios'
 
 const GeneralState = props => { 
-
-
-const productos = [
-      {
-	id:1,
-        nombre: "Hamburguesas",
-        categoria: "Comida rápida",
-        cantidadxdia: "20",
-        precio: "5",
-        imagen:
-          "https://sevilla.abc.es/gurme/wp-content/uploads/sites/24/2012/01/comida-rapida-casera.jpg",
-        descripcion:
-          "Lorem dasdasdasdssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssipsum jasjdjajsdhaksjhdkahskdjhasjhdkhaksjdhjahsjdhaksjhdkahskjdhkjahskdhkjashd",
-      },
-      {
-	id:2,
-        nombre: "Hamburguesas",
-        categoria: "Comida rápida",
-        cantidadxdia: "20",
-        precio: "5",
-        imagen:
-          "https://sevilla.abc.es/gurme/wp-content/uploads/sites/24/2012/01/comida-rapida-casera.jpg",
-        descripcion:
-          "Lorem ipsum jasjdjajsdhaksjhdkahskdjhasjhdkhaksjdhjahsjdhaksjhdkahskjdhkjahskdhkjashd",
-      },
-      {
-	id:3,
-        nombre: "Hamburguesas",
-        categoria: "Comida rápida",
-        cantidadxdia: "20",
-        precio: "5",
-        imagen:
-          "https://sevilla.abc.es/gurme/wp-content/uploads/sites/24/2012/01/comida-rapida-casera.jpg",
-        descripcion:
-          "Lorem ipsum jasjdjajsdhaksjhdkahskdjhasjhdkhaksjdhjahsjdhaksjhdkahskjdhkjahskdhkjashd",
-      },
-      {
-	id:4,
-        nombre: "Hamburguesas",
-        categoria: "Comida rápida",
-        cantidadxdia: "20",
-        precio: "5",
-        imagen:
-          "https://sevilla.abc.es/gurme/wp-content/uploads/sites/24/2012/01/comida-rapida-casera.jpg",
-        descripcion:
-          "Lorem ipsum jasjdjajsdhaksjhdkahskdjhasjhdkhaksjdhjahsjdhaksjhdkahskjdhkjahskdhkjashd",
-      }
-
-]
 
     const initialState = {
 
         productos: [],
 	sidebar : true,
-	errorFormularioPro:false
+	errorFormularioPro:false,
+	producto:null
     }
 
     //dispach para las acciones 
@@ -76,21 +29,37 @@ const productos = [
 
     //Obtener productos 
     //
-    const obtenerProductos = () => {
+    const obtenerProductos = async () => {
+	try{
+        
+        const resultado = await clienteAxios.get('/api/restaurantes/productos');
+
 	dispatch({
 	    type:OBTENER_PRODUCTOS,
-	    payload:productos
+	    payload: resultado.data.productos
 	})
+
+	}catch(e){
+	    console.log(e)
+	}
     }
 
-    const agregarProducto = producto => {
-	producto.id = uuidv4();
+    const agregarProducto = async producto => {
 
-	//insertar a productos
-	dispatch({
-	    type:AGREGAR_PRODUCTO,
-	    payload:producto
-	})
+	try{
+	
+	const resultado = await clienteAxios.post('/api/restaurantes/productos', producto)
+	    console.log(resultado)
+	
+	    dispatch({
+		type:AGREGAR_PRODUCTO,
+		payload:resultado.data
+	    })
+
+	}catch(e){
+	    console.log(e)
+	}
+
 
     };
 
@@ -101,17 +70,67 @@ const productos = [
      })
     }
 
+    //Selecciona el producto en el que se dio click
+
+
+    const productoActual = productoId => {
+	dispatch({
+	    type:PRODUCTO_ACTUAL,
+	    payload:productoId
+	})
+    }
+
+    //Eliminar producto 
+    //
+    const eliminarProducto = async productoId => {
+	try{
+	    await clienteAxios.delete(`/api/restaurantes/productos/${productoId}`);
+	dispatch({
+          type: ELIMINAR_PRODUCTO,
+          payload: productoId,
+         });
+	    
+	}catch(e){
+         console.log(e);
+
+	}
+    }
+
+    const actualizarProducto = async producto => {
+	try{
+
+	    
+	    const resultado = await clienteAxios.put(`/api/restaurantes/productos/${producto._id}`,producto);
+
+	    console.log(resultado)
+
+	    dispatch({
+		type:ACTUALIZAR_PRODUCTO,
+		payload:resultado.data
+
+	    })
+	}catch(e){
+
+	    console.log(e)
+
+	}
+    }
+
     return (
 	<generalContext.Provider
 	value = {{
 	    sidebar : state.sidebar,
 	    productos: state.productos,
 	    errorFormularioPro: state.errorFormularioPro,
+	    producto:state.producto,
 
 	    obtenerProductos,
 	    mostrarSidebar,
 	    agregarProducto,
-	    mostrarError
+	    mostrarError,
+	    productoActual,
+	    eliminarProducto,
+	    actualizarProducto
 	}}
 	>
 	{props.children}

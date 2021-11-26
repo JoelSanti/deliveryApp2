@@ -1,4 +1,6 @@
+import {useContext} from "react";
 import { Link } from "react-router-dom";
+import generalContext from "../../../context/general/generalContext";
 const Producto = ({producto}) => {
    
     const {
@@ -8,7 +10,9 @@ const Producto = ({producto}) => {
 	    descripcion
    } = producto;
 
-
+   
+    const generalsContext = useContext(generalContext) 
+    const {productoActual,eliminarProducto} = generalsContext;
 
   return (
     <div className="group relative bg-danger shadow-lg">
@@ -22,7 +26,9 @@ const Producto = ({producto}) => {
       <div className="mt-4 grid m-4 gap-y-4">
         <div className="text-sm flex justify-between">
           <span className="font-bold">{nombre}</span>
-          <span className="text-naranja px-2 py-0.5 font-semibold">$ {precio}</span>
+          <span className="text-naranja px-2 py-0.5 font-semibold">
+            $ {precio}
+          </span>
         </div>
         <div className="text-xs flex justify-between">
           <span className="font-light">Id:19</span>
@@ -33,12 +39,17 @@ const Producto = ({producto}) => {
           {descripcion}
         </p>
         <div className="flex justify-between">
-          <button className="bg-primary text-white text-sm px-1.5 py-1 rounded-sm">
+          <button className="bg-primary text-white text-sm px-1.5 py-1 rounded-sm"
+          onClick={() => eliminarProducto(producto._id)}
+      >
             Eliminar
           </button>
           <Link to={"/dp"}>
             {" "}
-            <button className="bg-black text-white text-sm px-1.5 py-1 rounded-sm">
+            <button
+              className="bg-black text-white text-sm px-1.5 py-1 rounded-sm"
+              onClick={() => productoActual(producto._id)}
+            >
               Ver mas
             </button>
           </Link>
