@@ -1,6 +1,7 @@
 const Producto = require('../../models/modelsRestaurante/Producto')
 const { validationResult } = require('express-validator')
 
+const {cloudinary} = require('../../utils/cloudinary')
 
 exports.crearProducto = async (req,res) => {
     
@@ -17,7 +18,19 @@ exports.crearProducto = async (req,res) => {
 	const producto = new Producto(req.body)
 	//Guardar el creador via web token 
 	producto.creador = req.usuario.id;
-	//guardamos
+	//guardamos 
+	//Para guardar las imagenes en cloudinary
+	let imagenBase64 = req.body.imagen 
+	
+	const respuestaSubirImagen = await cloudinary.uploader.upload(imagenBase64,{
+	    upload_preset:'deliveryImagenes'
+	})
+
+	console.log(respuestaSubirImagen)
+
+	producto.imagen =respuestaSubirImagen.url;
+
+
 
 	producto.save();
 

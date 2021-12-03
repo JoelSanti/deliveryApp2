@@ -68,12 +68,12 @@ const DetallesProducto = (props) => {
                 <div className="bg-gray-500  h-80 ">
                   <img
                     className="mix-blend-overlay w-full h-full object-cover"
-                    src="https://sevilla.abc.es/gurme/wp-content/uploads/sites/24/2012/01/comida-rapida-casera.jpg"
+                    src={imagen}
                     alt="imagen no encontrada"
                   ></img>
 
                   <h1 className="relative -top-10 text-center text-white font-semibold text-xl">
-                    TALLARINES CON MARISCOS
+                    {nombre}
                   </h1>
                 </div>
               </div>
@@ -228,7 +228,7 @@ const DetallesProducto = (props) => {
             <div className="flex justify-between">
               <h1>Informacion del producto</h1>{" "}
               <button
-	        type='button'
+                type="button"
                 className=" text-naranja text-xl font-semibold"
                 onClick={() => switchMondal2()}
               >
@@ -257,7 +257,7 @@ const DetallesProducto = (props) => {
                     className="text-gray-500 w-full border-2"
                     name="cantidadxdia"
                     placeholder={cantidadxdia}
-	            onChange={productoOnchange}
+                    onChange={productoOnchange}
                   />
                 </div>
 
@@ -265,9 +265,9 @@ const DetallesProducto = (props) => {
                   <span className=" block">Precio:</span>
                   <input
                     className="text-gray-500 w-full border-2"
-	            name='precio'
+                    name="precio"
                     placeholder={precio}
-	            onChange={productoOnchange}
+                    onChange={productoOnchange}
                   />
                 </div>
               </div>
@@ -283,12 +283,11 @@ const DetallesProducto = (props) => {
                   id="imagen"
                 />
               </div>
-
             </div>
 
             <div className="flex justify-end gap-x-4 mt-4">
               <button
-	        type='button'
+                type="button"
                 className="px-4 py-2 rounded-md bg-black text-white font-semibold"
                 onClick={() => switchMondal2(false)}
               >
@@ -301,11 +300,8 @@ const DetallesProducto = (props) => {
                 Guardar
               </button>
             </div>
-
           </form>
         </div>
-
-
       </div>
     );
 }

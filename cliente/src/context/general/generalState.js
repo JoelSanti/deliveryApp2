@@ -49,7 +49,6 @@ const GeneralState = props => {
 	try{
 	
 	const resultado = await clienteAxios.post('/api/restaurantes/productos', producto)
-	    console.log(resultado)
 	
 	    dispatch({
 		type:AGREGAR_PRODUCTO,

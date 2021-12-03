@@ -1,6 +1,6 @@
 import Sidebar from "../layout/Sidebar";
 import CabeceraGestionR from "../layout/CabeceraGestionR";
-import {useState} from "react/cjs/react.development";
+import {useState,useEffect} from "react/cjs/react.development";
 import {useContext} from "react";
 import generalContext from "../../context/general/generalContext";
 
@@ -9,7 +9,11 @@ const AgregarProducto = (props) => {
     const generalsContext = useContext(generalContext) 
     const {agregarProducto} = generalsContext;
 
+    const [previewSource , setPreviewSource ] = useState()
+    const [urlImagen , selectUrlImagen] = useState('')
+
     const [producto , guardarProducto ] = useState(
+
 	{
 	    nombre:'',
 	    categoria:'',
@@ -35,15 +39,55 @@ const AgregarProducto = (props) => {
 	//validar el proyecto
 	if(nombre === ''){
           return;
-	} 
+	}
+	if(!previewSource){
+	    return
+	}
+        console.log(imagen)
+	console.log(producto)
 	//agregar el state
 	agregarProducto(producto)
 
 	//Redireccionar 
 	props.history.push('/gm')
+
 	//reiniciar el form 
     }
     
+    //Para previzualizar 
+    useEffect(()=>{
+	if(previewSource){
+        subirImagen(previewSource)	
+    }
+    },[previewSource])
+
+
+    const subirImagen =  base64Imagen => {
+	console.log(base64Imagen)	
+        
+
+	guardarProducto({
+	    ...producto,
+	    ["imagen"]:base64Imagen
+	})
+
+    }
+
+
+    const previewFile = file => {
+	const reader = new FileReader();
+	reader.readAsDataURL(file);
+	reader.onloadend = () => {
+             setPreviewSource(reader.result)  
+	}
+    }
+
+    const FileInputChange = e =>{
+        const file =  e.target.files[0]
+	previewFile(file)
+         
+        selectUrlImagen(e.target.value)
+    }
 
 
   return (
@@ -127,15 +171,19 @@ const AgregarProducto = (props) => {
                         htmlFor="imagen"
                         className="border-2 flex justify-end"
                       >
+                         
+                        <span className='my-auto text-center w-full text-gray-500'>{urlImagen}</span>
+
                         <h1 className="p-4 bg-caja">Buscar</h1>
+
                       </label>
+      
                       <input
                         className="text-gray-500 w-full border-2 hidden"
                         type="file"
                         id="imagen"
                         name="imagen"
-                        value={imagen}
-                        onChange={onchangeProducto}
+                        onChange={FileInputChange}
                       />
                     </div>
                   </div>
@@ -149,13 +197,10 @@ const AgregarProducto = (props) => {
                   <div className="bg-gray-500  h-80 ">
                     <img
                       className="mix-blend-overlay w-full h-full object-cover"
-                      src="https://i.pinimg.com/564x/41/67/7f/41677f6c5426da1c640648bc88282f99.jpg"
+                      src={previewSource}
                       alt="imagen no encontrada"
                     ></img>
 
-                    <h1 className="relative -top-10 text-center text-white font-semibold text-xl">
-                      TALLARINES CON MARISCOS
-                    </h1>
                   </div>
                 </div>
                 <textarea
